@@ -13,7 +13,7 @@
     </div>
     <div class="card">
         <div class="card-body">
-            <table class="table table-bordered table-responsive bg-white">
+            <table class="table table-bordered table-responsive bg-white" id="book-categories-table">
                 <thead>
                     <tr>
                     <th>No</th>
@@ -22,27 +22,31 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ( $bookCategorys as $bookCategory )
-                        <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            {{-- loop iteration fungsinya untuk menampilkan nomor urut --}}
-                             <td>{{ $bookCategory->name }}</td>
-                             <td>
-                                <a href="{{ route('admin.book-categories.edit', $bookCategory->id) }}"
-                                class="btn btn-sm btn-warning">Edit</a>
-                                <form action="{{ route('admin.book-categories.destroy', $bookCategory->id) }}"
-                                method="POST" class="d-inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-danger"
-                                    onclick="return confirm('Apakah anda yakin ingin menghapus kategori ini?')">Hapus
-                                </button>
-                                </form>
-                             </td>
-                        </tr>
-                    @endforeach
+
                 </tbody>
             </table>
         </div>
     </div>
 @endsection
+
+@push('scripts')
+<script src="https://code.jquery.com/jquery-4.0.0.min.js" integrity="sha256-OaVG6prZf4v69dPg6PhVattBXkcOWQB62pdZ3ORyrao=" crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function() {
+        $("#book-categories-table").DataTable({
+            // menampilkan ikon loading
+            processing:true,
+            // menggunakan server side (data  diproses di controller)
+            serverSide:true,
+            // routing yg memproses databases
+            ajax: "{{ route('admin.book-categories.index') }}",
+            // isi td dari table nya
+           columns: [
+                //data dan name: nama kolom, searchable : bisa di search ga datanya, orderable: bisa di urutin ga datanya
+                {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
+                {data: 'name', name: 'name', orderable: true, searchabel: true},
+                {data: 'action', name: 'action', orderable: false, searchabel: false}
+            ]
+        })
+    })
+</script>

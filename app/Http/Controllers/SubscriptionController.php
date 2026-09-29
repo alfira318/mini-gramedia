@@ -4,17 +4,43 @@ namespace App\Http\Controllers;
 
 use App\Models\SubscriptionPackage;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 class SubscriptionController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-         $subscriptions = SubscriptionPackage::all();
+        //$request->ajax jika ada permintaan dari ajax js, permintaan proses datatbels dipanggil maemlalu ajax js di bladenya
+       if ($request->ajax()){
+        $model = SubscriptionPackage::query();
 
-        return view('admin.subscription.index', compact('subscriptions'));
+         return DataTables::eloquent($model)
+        //memberi nomor urut 123
+        ->addIndexColumn()
+        //menambah data selain yang ada di databese : mengubah data atau untuk btn aksi
+        ->addColumn('action', function($data){
+            $editUrl = route('admin.subscription.edit', $data->id);
+            $deleteUrl = route('admin.subscription.destroy', $data->id);
+            $csrf = csrf_field();
+            $method = method_field('DELETE');
+            $btnEdit =  '<a href="'. $editUrl .'"class="btn btn-warning btn-sm">Edit</a>';
+           $btnDelete = '<form action="' . $deleteUrl . '" method="post" class="d-inline" onsubmit="return confirm(\'Apakah anda yakin menghapus?\')">
+                ' . $csrf . '
+                ' . $method . '
+                <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+            </form>';
+
+return $btnEdit . $btnDelete;
+        })
+         //menyimpan dari addcolumn yg ada di html didalamnya
+        ->rawColumns(['action'])
+        ->toJson();
+       }
+
+        return view('admin.subscription.index');
     }
 
     /**

@@ -18,6 +18,8 @@
     <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
     <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" />
 
+    <link rel="stylesheet" href="https://cdn.datatables.net/3.1.2/css/dataTables.dataTables.min.css" />
+
     <style>
         html,
         body {
@@ -29,7 +31,7 @@
 
 <body>
     <x-navbar />
-    
+
   <main class="flex-fill">
         @yield('content')
     </main>
@@ -40,6 +42,7 @@
     {{-- Slick js --}}
     <script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 
+    <script src="https://cdn.datatables.net/3.1.2/js/dataTables.min.js"></script>
     <x-footer />
 
     @stack('scripts')
