@@ -1,46 +1,43 @@
 <?php
 
 use App\Http\Controllers\BookCategoryController;
+use App\Http\Controllers\BookController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\SubscriptionPackageBookController;
 use App\Models\SubscriptionPackage;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
 
-
-Route::get('/', function () {
-    $subscriptions = SubscriptionPackage::take(3)->get();
-
-    return view('home', compact('subscriptions'));
-})->name('home');
-
-
-//kelompok yang boeh diakses hanya setelah login
-Route::middleware(['isLoggedIn'])->group(function(){
+Route::middleware(['isLoggedIn'])->group(function () {
     Route::get('/logout', [UserController::class, 'logout'])->name('logout');
 
-    //prefix untuk mengelompokan route admin yang path nya diawli dengan /admin
-    //seluruh route pada kelompok ini akan memiliki nama route diawali dangan admin. contoh: admin.dashboard
-    Route::prefix('admin')->middleware(['isAdmin'])->name('admin.')->group(function(){
+    Route::prefix('admin')->middleware(['isAdmin'])->name('admin.')->group(function () {
         Route::get('/dashboard', function () {
             return view('admin.dashboard');
         })->name('dashboard');
 
-    // resource route untuk mengolah data kategori buku yang otomatis membuat sesuai method
-    // CRUD pada BookCategoryController
         Route::resource('book-categories', BookCategoryController::class);
-    Route::resource('subscription', SubscriptionController::class);
-    });
+        Route::resource('subscription', SubscriptionController::class);
+        Route::get('/subscription/{id}/books', [SubscriptionPackageBookController::class, 'show'])->name('subscription.books');
+        Route::post('/subscription/{id}/books', [SubscriptionPackageBookController::class, 'store'])->name('subscription.books.store');
 
+        Route::resource('books', BookController::class);
+    });
 });
 
-//menggunakan get karena adanya proses dulu yaitu menghapus sesi
-Route::middleware(['isGuest'])->group(function(){
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('search', [HomeController::class, 'search'])->name('search');
+
+Route::get('/category/{id}', [BookCategoryController::class, 'show'])
+    ->name('category.show');
+
+Route::middleware(['isGuest'])->group(function () {
     Route::get('/register', function () {
-    return view('register');
+        return view('register');
     })->name('register');
 
     Route::post('/register', [UserController::class, 'register'])->name('register.store')->middleware('throttle:5,1');
-    //namacontrollwer, function,
 
     Route::get('/login', function () {
         return view('login');

@@ -5,6 +5,7 @@ namespace App\View\Components;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
+use App\Models\BookCategory;
 
 class Navbar extends Component
 {
@@ -21,6 +22,7 @@ class Navbar extends Component
      */
     public function render(): View|Closure|string
     {
+        $categories = BookCategory::orderBy('name', 'asc')->get();
         return view('components.navbar');
     }
 }

@@ -41,116 +41,65 @@
                     class="nav-link {{ request()->routeIs('admin.subscription.index') ? 'active' : '' }}">
                         Paket Langganan</a>
                 </li>
-                  <li class="nav-item">
-                    <a href="" class="nav-link">Buku</a>
-                </li>
+                <li class="nav-item">
+            <a href="{{ route('admin.books.index') }}"
+                class="nav-link {{ request()->routeIs('admin.books.index') ? 'active' : '' }}">Buku</a>
+            {{-- tambahin ini ke di code navbar --}}
+        </li>
+
 
             @else
-            {{-- DROPDOWN KATEGORI --}}
-            <div class="dropdown mt-2">
+           {{-- DROPDOWN KATEGORI --}}
+<div class="dropdown mt-2">
+    <a
+        href="#"
+        class="btn btn-light dropdown-toggle pt-2 me-2"
+        data-bs-toggle="dropdown"
+    >
+        Kategori
+    </a>
 
-                <a
-                    href="#"
-                    class="btn btn-light dropdown-toggle pt-2 me-2"
-                    data-bs-toggle="dropdown"
-                >
-                    Kategori
-                </a>
-
-                <div
-                    class="dropdown-menu dropdown-menu-card"
-                    style="min-width: 600px"
-                >
-
-                    <div class="p-3">
-
-                        <div class="row g-2">
-
-                            <div class="col-3">
-                                <div class="card py-2">
-                                    <div class="card-body p-2 text-center">
-                                        Kategori 1
-                                    </div>
+    <div
+        class="dropdown-menu dropdown-menu-card"
+        style="min-width: 600px"
+    >
+        <div class="p-3">
+            <div class="row g-2">
+                @foreach ($categories as $category)
+                    <div class="col-3">
+                        <a href="{{ route('category.show', $category->id) }}"
+                        class="text-decoration-none text-reset">
+                            <div class="card py-2 h-100">
+                                <div class="card-body p-2 text-center">
+                                    {{ $category->name }}
                                 </div>
                             </div>
-
-                            <div class="col-3">
-                                <div class="card py-2">
-                                    <div class="card-body p-2 text-center">
-                                        Kategori 2
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-3">
-                                <div class="card py-2">
-                                    <div class="card-body p-2 text-center">
-                                        Kategori 3
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-3">
-                                <div class="card py-2">
-                                    <div class="card-body p-2 text-center">
-                                        Kategori 4
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
+                        </a>
                     </div>
-
-                </div>
+                @endforeach
 
             </div>
+        </div>
+    </div>
+</div>
 
 
             {{-- SEARCH --}}
-            <div class="input-icon w-100 py-2">
-
-                <input
-                    type="text"
-                    class="form-control form-control-rounded"
-                    placeholder="Cari Judul, Produk, Buku, Penulis..."
-                >
-
-                <span class="input-icon-addon">
-
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="icon"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        stroke-width="2"
-                        stroke="currentColor"
-                        fill="none"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    >
-
-                        <path
-                            stroke="none"
-                            d="M0 0h24v24H0z"
-                            fill="none"
-                        />
-
-                        <circle cx="10" cy="10" r="7" />
-
-                        <line
-                            x1="21"
-                            y1="21"
-                            x2="15"
-                            y2="15"
-                        />
-
-                    </svg>
-
-                </span>
-
-            </div>
+          <form method="GET" action="{{ route('search') }}" class="input-icon w-100 py-2">
+            <input
+                type="text"
+               value="{{request('q') }}"
+               name="q"
+                class="form-control form-control-rounded"
+                placeholder="Cari Judul, produk, buku, penulis, dll...">
+                <button type="submit" class="input-icon-addon btn border-0 p-0 bg-transparent">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z"></path><circle cx="10" cy="10" r="7">
+                    </circle><line x1="21" y1="21" x2="15" y2="15"></line></svg>
+                </button>
+          </form>
 
 
             {{-- KERANJANG --}}

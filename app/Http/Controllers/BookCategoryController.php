@@ -66,10 +66,33 @@ class BookCategoryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request, string $id)
     {
-        //
+    $category = BookCategory::findOrFail($id);
+
+    $books = $category->books();
+
+    if ($request->filled('q')) {
+        $query = $request->q;
+
+        $books->where(function ($queryBuilder) use ($query) {
+            $queryBuilder->where('title', 'like', "%{$query}%")
+                ->orWhere('writer', 'like', "%{$query}%");
+        });
     }
+
+    if ($request->sort === 'cheapest') {
+        $books->orderBy('price', 'asc');
+    } elseif ($request->sort === 'expensive') {
+        $books->orderBy('price', 'desc');
+    } else {
+        $books->orderBy('created_at', 'desc');
+    }
+
+    $books = $books->paginate(12)->withQueryString();
+
+    return view('category', compact('category', 'books'));
+}
 
     /**
      * Show the form for editing the specified resource.

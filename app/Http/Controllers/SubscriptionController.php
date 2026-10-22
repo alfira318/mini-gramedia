@@ -24,6 +24,8 @@ class SubscriptionController extends Controller
         ->addColumn('action', function($data){
             $editUrl = route('admin.subscription.edit', $data->id);
             $deleteUrl = route('admin.subscription.destroy', $data->id);
+            $books = route('admin.subscription.books', $data->id);
+
             $csrf = csrf_field();
             $method = method_field('DELETE');
             $btnEdit =  '<a href="'. $editUrl .'"class="btn btn-warning btn-sm">Edit</a>';
@@ -33,7 +35,9 @@ class SubscriptionController extends Controller
                 <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
             </form>';
 
-return $btnEdit . $btnDelete;
+            $btnBooks = '<a href="' . $books . '" class="btn btn-info btn-sm">Buku</a>';
+
+return $btnEdit . $btnDelete . $btnBooks;
         })
          //menyimpan dari addcolumn yg ada di html didalamnya
         ->rawColumns(['action'])
