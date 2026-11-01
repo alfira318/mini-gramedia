@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\SubscriptionPackage;
 use Illuminate\Http\Request;
+use App\Models\SubscriptionPackageBook;
+use Illuminate\Support\Facades\Auth;
+use App\Models\SubscriptionPackageUser;
+use App\Models\Book;
 use Yajra\DataTables\Facades\DataTables;
 
 class SubscriptionController extends Controller
@@ -111,6 +115,38 @@ return $btnEdit . $btnDelete . $btnBooks;
         return redirect()->route('admin.subscription.index')->with('success', 'Kategori buku telah berhasil diperbarui');
     }
 
+    public function detail(Request $request, $id)
+{
+    $subscriptionPackage = SubscriptionPackage::findOrFail($id);
+
+    $bookIds = SubscriptionPackageBook::where(
+        'subscription_package_id',
+        $subscriptionPackage->id
+    )->pluck('book_id');
+
+    $query = $request->input('q', '');
+
+    $books = Book::whereIn('id', $bookIds)
+        ->when($query !== '', function ($builder) use ($query) {
+            $builder->where('title', 'like', '%' . $query . '%');
+        })
+        ->with('bookCategory')
+        ->paginate(8)
+        ->withQueryString();
+
+    return view('user.subscription-package.subscription', compact(
+        'subscriptionPackage',
+        'books',
+        'query'
+    ));
+}
+    public function indexUser()
+{
+    $packages = SubscriptionPackage::all();
+
+    return view('subscription', compact('packages'));
+}
+
     /**
      * Remove the specified resource from storage.
      */
@@ -120,5 +156,25 @@ return $btnEdit . $btnDelete . $btnBooks;
 
         $subscriptions->delete();
         return redirect()->route('admin.subscription.index')->with('success', 'kategori buku telah berhasil dihapus');
+    }
+
+    public function checkoutPage($id)
+    {
+        $subscriptionPackage = SubscriptionPackage::findOrFail($id);
+
+        return view('user.subscription-package.checkout', compact('subscriptionPackage'));
+    }
+
+    public function checkout($id)
+    {
+        $subscriptionPackage = SubscriptionPackage::findOrFail($id);
+
+        SubscriptionPackageUser::create([
+             'subscription_package_id' => $subscriptionPackage->id,
+            'user_id' => Auth::id(),
+            // ambil id org yg login, mendeteksi siapa user yg belinya 30 hari dari sekarang, format tahun-bulan-tanggal
+            'expired_date' => now()->addDays(30)->format('Y-m-d'),
+        ]);
+        return redirect()->route('home')->with('success', 'Pembayaran berhasil. Terima kasih telah berlangganan!');
     }
 }

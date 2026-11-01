@@ -5,12 +5,18 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SubscriptionPackageBookController;
-use App\Models\SubscriptionPackage;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 
 Route::middleware(['isLoggedIn'])->group(function () {
     Route::get('/logout', [UserController::class, 'logout'])->name('logout');
+
+    Route::get('/profile', [UserController::class, 'profile'])->name('profile');
+
+    Route::get('subscription/{id}/checkout', [SubscriptionController::class, 'checkoutPage'])
+        ->name('subscription.checkout-page');
+    Route::post('subscription/{id}/checkout', [SubscriptionController::class, 'checkout'])
+        ->name('subscription.checkout');
 
     Route::prefix('admin')->middleware(['isAdmin'])->name('admin.')->group(function () {
         Route::get('/dashboard', function () {
@@ -31,6 +37,16 @@ Route::get('search', [HomeController::class, 'search'])->name('search');
 
 Route::get('/category/{id}', [BookCategoryController::class, 'show'])
     ->name('category.show');
+
+Route::get('/subscription', [
+    SubscriptionController::class,
+    'indexUser'
+])->name('subscription.indexUser');
+
+Route::get('/subscription/{id}', [
+    SubscriptionController::class,
+    'detail'
+])->name('subscription.detail');
 
 Route::middleware(['isGuest'])->group(function () {
     Route::get('/register', function () {

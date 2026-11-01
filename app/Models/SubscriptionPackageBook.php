@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['book_id', 'subscription_package_id', 'expired_date'])]
+#[Fillable(['book_id', 'subscription_package_id'])]
 
 class SubscriptionPackageBook extends Model
 {

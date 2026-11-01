@@ -145,70 +145,55 @@
 
 
 
-            {{-- ================= PAKET LANGGANAN ================= --}}
-            <div class="mt-4">
+        {{-- ================= PAKET LANGGANAN ================= --}}
+<div class="mt-4">
+    <div class="d-flex align-items-center gap-2">
+        <span class="badge bg-yellow text-yellow-fg p-2">
+            <i class="fa-solid fa-crown fs-3"></i>
+        </span>
 
-                <div class="d-flex align-items-center gap-2">
+        <h2 class="mt-3 text-dark">Paket Langganan</h2>
+    </div>
 
-                    <span class="badge bg-yellow text-yellow-fg p-2">
-                        <i class="fa-solid fa-crown fs-3"></i>
-                    </span>
+    <div class="row g-4 mt-2">
+        @forelse ($subscriptionPackages as $subscription)
+            <div class="col-md-4">
+                <a href="{{ route('subscription.detail', $subscription->id) }}"
+                    class="text-decoration-none text-dark d-block h-100">
 
-                    <h2 class="mt-3 text-dark">Paket Langganan</h2>
-                </div>
+                   <div class="card h-100"
+                                style="background: linear-gradient(135deg, #ffffff 0%, {{ $subscription->color ?? '#d9f99d' }} 100%);">
+                                <div class="card-body row">
+                                    <div class="col-4"></div>
+                                    <div class="col-6 text-center text-dark">
+                                        <h2 style="font-weight: bold;">{{ strtoupper($subscription->name) }}</h2>
+                                        <p class="text-secondary" style="font-weight: bold; margin: 0; !important">PACKAGE
+                                        </p>
+                                        <div>
+                                            Rp <span style="font-size: 2rem; font-weight: bold;" class="text-warning">
+                                                {{ number_format($subscription->price, 0, ',', '.') }}
+                                            </span>
 
-                <div class="row g-4 mt-2">
+                                            <br>
 
-                    @forelse ($subscriptionPackages as $subscription)
-                        <div class="col-md-4">
-
-                            <div class="card h-100"
-                                style="background: linear-gradient(135deg, #ffffff 0%, {{ $subscription->color }} 100%);">
-
-                                <div class="card-body text-center text-dark">
-
-                                    <h2 style="font-weight: bold;">
-                                        {{ $subscription->name }}
-                                    </h2>
-
-                                    <p class="text-secondary" style="font-weight: bold; margin: 0;">
-                                        PACKAGE
-                                    </p>
-
-                                    <div>
-
-                                        Rp
-
-                                        <span style="font-size: 2rem; font-weight: bold;"class="text-warning">
-                                            {{ number_format($subscription->price, 0, ',', '.') }}
-                                        </span>
-
-                                        <br>
-
-                                        <span style="font-weight: bold; class="text-secondary">
-                                            {{ $subscription->description }}
-                                        </span>
-
+                                            <span style="font-weight: bold; margin: 0 !important;" class="text-secondary">
+                                                {{ $subscription->description }}
+                                            </span>
+                                        </div>
                                     </div>
-
                                 </div>
-
                             </div>
-
-                        </div>
-
-                    @empty
-
-                        <div class="col-12">
-                            <div class="text-center text-secondary">
-                                Belum ada paket langganan.
-                            </div>
-                        </div>
-                    @endforelse
-
-                </div>
-
+                </a>
             </div>
+        @empty
+            <div class="col-12">
+                <div class="text-center text-secondary">
+                    Belum ada paket langganan.
+                </div>
+            </div>
+        @endforelse
+    </div>
+</div>
 
 
             {{-- ================= BUKU BARU DIRILIS ================= --}}

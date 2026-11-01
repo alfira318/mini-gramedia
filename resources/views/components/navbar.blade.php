@@ -110,20 +110,25 @@
         </ul>
 
 
-        {{-- LOGIN REGISTER --}}
-        <div class="navbar-nav flex-row order-md-last ms-auto">
-            @if(Auth::check())
-                <a href="{{ route('logout') }}" class="btn btn-danger">Logout</a>
-            @else
-            <a href="{{ route('login') }}" class="btn btn-primary">
-                Masuk
-            </a>
+{{-- LOGIN REGISTER --}}
+        
+<div class="navbar-nav flex-row order-md-last ms-auto align-items-center gap-2">
+    @if (Auth::check())
+            <a href="{{ route('profile') }}"
+            class="btn btn-light d-flex align-items-center gap-2">
+            <span class="avatar rounded-circle bg-primary text-white fw-bold">
+                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+            </span>
+        </a>
+        <a href="{{ route('logout') }}" class="btn btn-danger">
+            Logout
+        </a>
+    @else
+        <a href="{{ route('login') }}" class="btn btn-primary">Masuk</a>
+        <a href="{{ route('register') }}" class="btn btn-light">Daftar</a>
+    @endif
+</div>
 
-            <a href="{{ route('register') }}" class="btn btn-light">
-                Daftar
-            </a>
-             @endif
 
-        </div>
     </div>
 </header>

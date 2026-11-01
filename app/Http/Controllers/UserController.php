@@ -5,7 +5,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\validation\Rules\Password;
+use App\Models\Checkout;
+use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
 {
@@ -14,10 +15,10 @@ class UserController extends Controller
     {
         $validatedData = $request->validate([
             //'nama input' => ['jenis validasi']
-            'name' => ['required', 'min: 3'],
+            'name' => ['required', 'min:3'],
             //unique:;  table, field : data email tidak boleh duplikat
             'email' => ['required', 'email:rfc,dns', 'unique:users,email'],
-            'password' => ['required', 'min: 8', 'max: 10', 'confirmed', Password::min(8)->max(10)->uncompromised()],
+            'password' => ['required', 'min:8', 'max:10', 'confirmed', Password::min(8)->max(10)->uncompromised()],
         ], [
             //teks err yang bakal muncul jika validasi gagal
             //'nama_input.jenis_validasi' => 'pesan'
@@ -94,5 +95,33 @@ class UserController extends Controller
         $request->session()->regenerateToken();
         return redirect()->route('home')->with('success', 'Berhasil logout');
     }
+
+
+public function profile()
+{
+    /** @var User $user */
+    $user = Auth::user();
+
+    $packages = $user->subscriptionPackageUser()
+        ->with('subscriptionPackage')
+        ->latest('expired_date')
+        ->get();
+
+    $checkouts = Checkout::with('checkoutBooks.book')
+        ->where('user_id', $user->id)
+        ->latest()
+        ->get();
+
+    $bookCount = $checkouts->sum(function ($checkout) {
+        return $checkout->checkoutBooks->sum('total_book');
+    });
+
+    return view('profile', compact(
+        'user',
+        'packages',
+        'checkouts',
+        'bookCount'
+    ));
+}
 }
 

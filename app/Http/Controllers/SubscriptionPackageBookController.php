@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\SubscriptionPackage;
 use App\Models\Book;
+use App\Models\SubscriptionPackageBook;
 use Yajra\DataTables\Facades\DataTables;
 
 
@@ -28,7 +29,6 @@ class SubscriptionPackageBookController extends Controller
                     }
                 )
 
-
                 ->editColumn('price', function ($row) {
                     return 'Rp. ' . number_format($row->price, 0, ',', '.');
                 })
@@ -38,37 +38,25 @@ class SubscriptionPackageBookController extends Controller
                     return $row->bookCategory->name;
                 })
 
-
-
-                ->editColumn('action', function($row){
-                    $btnDetail = '<button type="button" class="btn btn-info w-100 mb-2"
-                    data-cover="' . asset($row->cover) . '"
-                    data-title="' . e($row->title) . '"
-                     data-writer="' . e($row->writer) . '"
-                    data-publisher="' . e($row->publisher) . '"
-                    data-price="' . e('Rp. ' . number_format($row->price, 0, ',', '.')) . '"
-                    data-description="' . e($row->description) . '"
-                    data-language="' . e($row->language) . '"
-                    data-category="' . e($row->bookCategory->name) . '"
-                    data-release_date="' . e(date('d-m-Y', strtotime($row->release_date))) . '"
-                    data-page_of_book="' . e($row->page_of_book) . '">Detail</button>';
-
-
-                    $btnEdit = '<a href="' . route('admin.books.edit', $row->id) . '"
-                    class="btn btn-primary w-100 mb-2">edit buku </a>';
-
-                    $btnDelete =
-                    '<form action="' . route('admin.books.destroy', $row->id) . '" method="POST" class="d-block w-100 m-0" onsubmit="return confirm(\'Apakah kamu yakin ingin menghapus buku ini?\')">
-                        ' . csrf_field() . '
-                        ' . method_field('DELETE') . '
-                        <button type="submit" class="btn btn-danger w-100">hapus buku</button>
-                    </form>';
-
-                    return '<div class="d-flex flex-column">' . $btnDetail . $btnEdit . $btnDelete . '</div>';
+                ->addColumn('checkAdded', function ($row) use ($subscriptionPackage) {
+                    $subscriptionPackageBook = $subscriptionPackage->subscriptionPackageBooks()->pluck('book_id')->toArray();
+                    return in_array($row->id, $subscriptionPackageBook) ? 'Ya' : 'Tidak';
                 })
-                ->rawColumns(['covering'])
+
+                ->rawColumns(['covering', 'checkAdded'])
                 ->toJson();
         }
         return view('admin.subscription.books', compact('subscriptionPackage'));
+    }
+
+    public function store(Request $request, $id) {
+        $bookIds = $request->book_ids;
+        foreach ($bookIds as $bookId) {
+            SubscriptionPackageBook::create([
+                'subscription_package_id' => $id,
+                'book_id' => $bookId,
+            ]);
+        }
+        return redirect()->back()->with('success', 'Buku berhasil ditambahkan ke paket langganan');
     }
 }
