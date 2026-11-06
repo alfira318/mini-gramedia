@@ -3,10 +3,13 @@
 @section('content')
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Kategori Buku</h2>
-        <a href="{{ route('admin.subscription.create') }}" class="btn btn-primary">Tambah Kategori Buku</a>
+        <h2>Paket Langganan</h2>
+        <div class="d-flex gap-2">
+            <a href="{{ route('admin.subscription.export') }}" class="btn btn-success">Export Data</a>
+            <a href="{{ route('admin.subscription.create') }}" class="btn btn-primary">Tambah Paket Langganan</a>
+        </div>
     </div>
-
+</div>
     @if (session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif

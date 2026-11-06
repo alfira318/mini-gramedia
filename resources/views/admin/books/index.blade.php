@@ -8,11 +8,14 @@
                 {{ session('success') }}
             </div>
         @endif
-        <div class="d-flex justify-content-between">
+        <div class="d-flex justify-content-between align-items-center mb-3">
             <h2>Daftar Buku</h2>
-            <a href="{{ route('admin.books.create') }}" class="btn btn-primary">
-                <i class="fa-solid fa-plus me-1"></i> Tambah Buku
-            </a>
+            <div class="d-flex gap-2">
+                <a href="{{ route('admin.books.export') }}" class="btn btn-success mb-3">Export Data</a>
+                <a href="{{ route('admin.books.create') }}" class="btn btn-primary mb-3">
+                    <i class="fa-solid fa-plus me-1"></i> Tambah Buku
+                </a>
+            </div>
         </div>
         <table class="table table-bordered mt-3" id="data-buku">
             <thead>

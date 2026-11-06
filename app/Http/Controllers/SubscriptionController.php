@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\SubscriptionPackagesExport;
 use App\Models\SubscriptionPackage;
 use Illuminate\Http\Request;
 use App\Models\SubscriptionPackageBook;
@@ -9,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\SubscriptionPackageUser;
 use App\Models\Book;
 use Yajra\DataTables\Facades\DataTables;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SubscriptionController extends Controller
 {
@@ -177,4 +179,9 @@ return $btnEdit . $btnDelete . $btnBooks;
         ]);
         return redirect()->route('home')->with('success', 'Pembayaran berhasil. Terima kasih telah berlangganan!');
     }
+
+    public function export()
+{
+    return Excel::download(new SubscriptionPackagesExport, 'data-paket-langganan.xlsx');
+}
 }

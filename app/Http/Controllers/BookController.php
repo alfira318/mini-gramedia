@@ -7,6 +7,8 @@ use App\Models\BookCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\BooksExport;
 
 
 class BookController extends Controller
@@ -166,7 +168,8 @@ class BookController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $book = Book::where('id', $id)->with('subscriptionPackageBooks')->first();
+        return view('user.books.show', compact('book'));
     }
 
     /**
@@ -221,5 +224,10 @@ public function update(Request $request, string $id)
          $book = Book::findOrFail($id);
         $book->delete();
         return redirect()->route('admin.books.index')->with('success', 'Buku berhasil dihapus');
+    }
+
+     public function export()
+    {
+        return Excel::download(new BooksExport, 'data-buku.xlsx');
     }
 }

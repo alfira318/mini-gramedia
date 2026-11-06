@@ -14,7 +14,6 @@
 
                         <div class="overflow-hidden">
                             <h3 class="mb-1 text-truncate">{{ $user->name }}</h3>
-                            <div class="text-secondary small">Member</div>
                         </div>
                     </div>
 

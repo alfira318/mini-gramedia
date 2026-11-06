@@ -2,8 +2,11 @@
 @section('content')
     <div class="container mt-5">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2>Tambah Kategori Buku</h2>
+            <h2>Kategori Buku</h2>
+            <div class="d-flex gap-2">
+                <a href="{{route('admin.book-categories.export')}}" class="btn btn-success mb-3">Export Data</a>
             <a href="{{route('admin.book-categories.create')}}" class="btn btn-primary mb-3">Tambah Kategori Buku</a>
+        </div>
         </div>
         @if (session('success'))
             <div class="alert alert-success">

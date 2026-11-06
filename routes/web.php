@@ -23,17 +23,21 @@ Route::middleware(['isLoggedIn'])->group(function () {
             return view('admin.dashboard');
         })->name('dashboard');
 
+        Route::get('book-categories/export', [BookCategoryController::class, 'export'])->name('book-categories.export');
+        Route::get('/books/export', [BookController::class, 'export'])->name('books.export');
+        Route::get('/subscription/export', [SubscriptionController::class, 'export'])->name('subscription.export');
         Route::resource('book-categories', BookCategoryController::class);
         Route::resource('subscription', SubscriptionController::class);
         Route::get('/subscription/{id}/books', [SubscriptionPackageBookController::class, 'show'])->name('subscription.books');
         Route::post('/subscription/{id}/books', [SubscriptionPackageBookController::class, 'store'])->name('subscription.books.store');
 
-        Route::resource('books', BookController::class);
+       Route::resource('books', BookController::class)->except(['show']);
     });
 });
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('search', [HomeController::class, 'search'])->name('search');
+Route::get('/books/{id}', [BookController::class, 'show'])->name('books.show');
 
 Route::get('/category/{id}', [BookCategoryController::class, 'show'])
     ->name('category.show');

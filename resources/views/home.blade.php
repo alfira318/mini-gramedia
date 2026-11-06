@@ -209,39 +209,52 @@
 
 
                 {{-- INI CONTAINER SLIDER --}}
-                <div id="wrapper-slide">
-                    @forelse ($latestBooks as $book)
-                        <div class="px-2">
-                            <div class="card">
-                                <div class="card-body">
+               <div id="wrapper-slide">
+            @forelse ($latestBooks as $book)
+        <div class="px-2">
+            <a href="{{ route('books.show', $book->id) }}"
+                class="text-decoration-none text-dark d-block">
 
-                                    <img class="d-block mx-auto w-75 mt-3" src="{{ asset($book->cover) }}">
+                <div class="card">
+                    <div class="card-body">
 
-                                    <div class="d-flex gap-2 mt-2">
-                                        <p class="badge"><i class="fa-solid fa-mobile"></i>PDF</p>
-                                        <p class="badge">3+</p>
-                                    </div>
-                                    <div>
-                                        <h5><span style="font-size: 0.8rem;"
-                                                class="text-secondary">{{ $book->writer }}</span>
-                                            <br><span style="font-size: 1rem">{{ $book->title }}</span>
-                                        </h5>
+                        <img class="d-block mx-auto w-75 mt-3"
+                            src="{{ asset($book->cover) }}">
 
-                                        <h4 style="font-size: 1.2rem; font-weight: bold;">Rp
-                                            {{ number_format($book->price, 0, ',', '.') }}
-                                        </h4>
-
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="d-flex gap-2 mt-2">
+                            <p class="badge">
+                                <i class="fa-solid fa-mobile"></i>PDF
+                            </p>
+                            <p class="badge">3+</p>
                         </div>
-                    @empty
-                        <p class="text-center">Belum ada buku terbaru yang tersedia.</p>
-                    @endforelse
 
-                    {{-- END SLIDER --}}
+                        <div>
+                            <h5>
+                                <span style="font-size: 0.8rem;"
+                                    class="text-secondary">
+                                    {{ $book->writer }}
+                                </span>
+                                <br>
 
+                                <span style="font-size: 1rem">
+                                    {{ $book->title }}
+                                </span>
+                            </h5>
+
+                            <h4 style="font-size: 1.2rem; font-weight: bold;">
+                                Rp {{ number_format($book->price, 0, ',', '.') }}
+                            </h4>
+                        </div>
+
+                    </div>
                 </div>
+
+            </a>
+        </div>
+    @empty
+        <p class="text-center">Belum ada buku terbaru yang tersedia.</p>
+    @endforelse
+</div>
 
             </div>
             {{-- buku gratis --}}
