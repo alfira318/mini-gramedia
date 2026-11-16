@@ -104,14 +104,16 @@
 
             {{-- KERANJANG --}}
             <div class="mt-3 ms-2">
-                <i class="fa-solid fa-cart-arrow-down fs-3 text-dark"></i>
+                <a href="{{ route('carts') }}">
+                    <i class="fa-solid fa-cart-arrow-down fs-3 text-dark"></i>
+                </a>
             </div>
         @endif
         </ul>
 
 
 {{-- LOGIN REGISTER --}}
-        
+
 <div class="navbar-nav flex-row order-md-last ms-auto align-items-center gap-2">
     @if (Auth::check())
             <a href="{{ route('profile') }}"

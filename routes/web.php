@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\SubscriptionPackageBookController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\CartController;
 
 Route::middleware(['isLoggedIn'])->group(function () {
     Route::get('/logout', [UserController::class, 'logout'])->name('logout');
@@ -17,6 +18,10 @@ Route::middleware(['isLoggedIn'])->group(function () {
         ->name('subscription.checkout-page');
     Route::post('subscription/{id}/checkout', [SubscriptionController::class, 'checkout'])
         ->name('subscription.checkout');
+
+    Route::get('/cart', [CartController::class, 'index'])->name('carts');
+    Route::post('/cart', [CartController::class, 'store'])->name('carts.store');
+    Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('carts.destroy');
 
     Route::prefix('admin')->middleware(['isAdmin'])->name('admin.')->group(function () {
         Route::get('/dashboard', function () {
