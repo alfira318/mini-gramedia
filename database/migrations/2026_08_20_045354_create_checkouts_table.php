@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('total_book');
             $table->integer('total_book_price'); //harga buku
             $table->integer('total_price'); //harga buku dan pajak
-            $table->enum('status', ['Pending', 'Done']);
+           $table->enum('status', ['Pending', 'Done']);
             $table->timestamps();
         });
     }

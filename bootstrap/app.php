@@ -18,6 +18,12 @@ return Application::configure(basePath: dirname(__DIR__))
             'isGuest' => App\Http\Middleware\IsGuest::class,
             'isAdmin' => App\Http\Middleware\IsAdmin::class,
         ]);
+
+        // mengecualikan route post ini dari token csrf karena midtrans tidak mengirimkan token csrf
+        $middleware->preventRequestForgery(
+            except: [
+                'payments/midtrans-notification',
+            ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

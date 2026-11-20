@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\SubscriptionPackageUser;
 
 class CartController extends Controller
 {
@@ -14,8 +15,32 @@ class CartController extends Controller
     public function index()
     {
         // dd(Cart::all());
-        $carts = Cart::with('book', 'subscriptionPackage')->where('user_id', Auth::id())->get();
-        return view('user.carts.index', compact('carts'));
+        $userId = Auth::id();
+        $carts = Cart::with('book', 'subscriptionPackage')->where('user_id', $userId)->get();
+
+        // paket langganan aktif milik pengguna
+        $activePackageIds = SubscriptionPackageUser::where('user_id', $userId)
+        ->whereDate('expired_date', '>', today())
+        ->pluck('subscription_package_id');
+
+        // paket di keranjang yg belum dibeli pengguna
+        $packageUserNotBought = $carts
+        ->whereNotNull('subscription_id')
+        ->pluck('subscription_id')
+        ->unique()
+        ->diff($activePackageIds)
+        ->values();
+
+        // menambahkan attribute baru ke data $cart
+        $carts->each(function ($cart) use ($packageUserNotBought) {
+            $cart->display_price = $cart->subscriptionPackage ? $cart->subscriptionPackage->price : $cart->book->price;
+
+            $cart->needs_package = $packageUserNotBought->contains($cart->subscription_id);
+        });
+
+        $totalPrice = $carts->sum('display_price');
+
+        return view('user.carts.index', compact('carts', 'totalPrice'));
     }
 
 
@@ -41,7 +66,7 @@ class CartController extends Controller
 
         if($request->action === 'add_to_cart') {
         //    menentukan isi field subscrtiption_package_id
-        $packageId = $request->purchase_option === 'none' ?null: $request->subcription_package_id;
+        $packageId = $request->purchase_option === 'none' ? null : $request->purchase_option;
         // updateOrCreate: jika pengguna ini udah pernah masukin buku ini (user_id dan book_id yg dijadikan acuan cari data di databasenya),
         // maka update pilihan pembayarannya (subscrtiption_package_id). Kalau belum ada, maka buat data baru
         // updateOrCreate(['cari data berdasarkan apa], ['update field apa saja'])

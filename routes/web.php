@@ -8,6 +8,7 @@ use App\Http\Controllers\SubscriptionPackageBookController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 
 Route::middleware(['isLoggedIn'])->group(function () {
     Route::get('/logout', [UserController::class, 'logout'])->name('logout');
@@ -19,9 +20,16 @@ Route::middleware(['isLoggedIn'])->group(function () {
     Route::post('subscription/{id}/checkout', [SubscriptionController::class, 'checkout'])
         ->name('subscription.checkout');
 
+        // keranjang belanja
     Route::get('/cart', [CartController::class, 'index'])->name('carts');
     Route::post('/cart', [CartController::class, 'store'])->name('carts.store');
     Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('carts.destroy');
+
+    // checkout
+    Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkouts.store');
+    // mengambil snap token dan mengarahkan ke halaman midtrans pembayaran
+    Route::get('checkout/{id}', [CheckoutController::class, 'show'])->name('checkouts.show');
+    Route::get('/checkouts/{id}/struk', [CheckoutController::class, 'struk'])->name('checkouts.struk');
 
     Route::prefix('admin')->middleware(['isAdmin'])->name('admin.')->group(function () {
         Route::get('/dashboard', function () {
@@ -43,6 +51,8 @@ Route::middleware(['isLoggedIn'])->group(function () {
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('search', [HomeController::class, 'search'])->name('search');
 Route::get('/books/{id}', [BookController::class, 'show'])->name('books.show');
+
+Route::post('payments/midtrans-notification', [CheckoutController::class, 'receive']);
 
 Route::get('/category/{id}', [BookCategoryController::class, 'show'])
     ->name('category.show');

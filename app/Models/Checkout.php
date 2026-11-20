@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['user_id', 'payment_method', 'total_book', 'total_book_price', 'total_price', 'status'])]
+#[Fillable(['user_id', 'payment_method', 'total_book', 'total_book_price', 'total_price', 'status', 'order_code', 'paid_date', 'snap_token'])]
 
 class Checkout extends Model
 {

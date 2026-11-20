@@ -18,6 +18,6 @@ class Cart extends Model
     }
     public function subscriptionPackage():belongsTo
     {
-        return $this->belongsTo(SubscriptionPackage::class);
+        return $this->belongsTo(SubscriptionPackage::class, 'subscription_id');
     }
 }
